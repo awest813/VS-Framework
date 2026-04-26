@@ -59,12 +59,16 @@ func apply_stimulant(suppress_duration : float) -> void:
 
 func _start_crash() -> void:
 	is_suppressed = false
-	# Temporarily triple accumulation rate during the crash window
-	var original_rate := accumulation_rate
-	accumulation_rate = original_rate * crash_multiplier
+	# Temporarily multiply accumulation rate during the crash window.
+	# Rate is restored inside _on_crash_ended; we capture it as a member so only one
+	# callback path handles restoration.
+	_pre_crash_rate = accumulation_rate
+	accumulation_rate = _pre_crash_rate * crash_multiplier
 	_crash_timer.start()
-	_crash_timer.timeout.connect(func(): accumulation_rate = original_rate, CONNECT_ONE_SHOT)
 
+# Stored so _on_crash_ended can restore it without a closure.
+var _pre_crash_rate : float = 0.0
 
 func _on_crash_ended() -> void:
+	accumulation_rate = _pre_crash_rate
 	CogitoGlobals.debug_log(true, "FatigueAttribute", "Stimulant crash over")

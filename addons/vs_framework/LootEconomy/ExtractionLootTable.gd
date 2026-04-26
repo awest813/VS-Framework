@@ -10,9 +10,6 @@ enum Tier { COMMON = 1, UNCOMMON = 2, RARE = 3, LEGENDARY = 4 }
 ## The highest tier of items allowed to drop from this table.
 @export var max_tier_allowed : Tier = Tier.UNCOMMON
 
-## Total weight of items that should be generated per roll call.
-@export var weight_budget : int = 100
-
 
 ## Returns a filtered subset of drops respecting max_tier_allowed.
 func get_filtered_drops() -> Array:

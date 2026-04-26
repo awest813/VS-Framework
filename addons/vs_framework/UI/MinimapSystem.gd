@@ -42,9 +42,11 @@ func _draw() -> void:
 	if _room_graph.is_empty():
 		return
 
-	# Find grid bounds
-	var min_x : int = INF
-	var min_y : int = INF
+	# Find grid bounds by initialising from the first room to avoid float-infinity in int vars.
+	if _room_graph.is_empty():
+		return
+	var min_x : int = (_room_graph[0] as RoomData).grid_x
+	var min_y : int = (_room_graph[0] as RoomData).grid_y
 	for room in _room_graph:
 		min_x = min(min_x, room.grid_x)
 		min_y = min(min_y, room.grid_y)

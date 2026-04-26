@@ -109,6 +109,8 @@ func _populate_factions() -> void:
 	for faction in FactionRegistry.factions:
 		var row := Label.new()
 		var rep : int = FactionRegistry.get_reputation(faction.faction_id)
-		var stance_str : String = ["Friendly", "Neutral", "Hostile"][FactionRegistry.get_stance(faction.faction_id)]
+		var stance_names : Array = ["Friendly", "Neutral", "Hostile"]
+		var stance_idx : int = clamp(FactionRegistry.get_stance(faction.faction_id), 0, stance_names.size() - 1)
+		var stance_str : String = stance_names[stance_idx]
 		row.text = faction.faction_name + "  Rep: " + str(rep) + "  (" + stance_str + ")"
 		faction_list_container.add_child(row)

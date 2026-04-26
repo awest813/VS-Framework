@@ -31,7 +31,6 @@ func generate(mission : MissionDefinitionResource) -> Array:
 	var critical_path : Array = []
 	var pos := Vector2i(0, 0)
 	var directions := [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]
-	var used_dirs : Array = []
 
 	var cp_length : int = max(3, room_count / 2)
 	for i in cp_length:
@@ -41,12 +40,11 @@ func generate(mission : MissionDefinitionResource) -> Array:
 		critical_path.append(room)
 
 		if i > 0:
-			_connect_rooms(critical_path[i - 1], room, pos - _last_dir(critical_path, i))
+			_connect_rooms(critical_path[i - 1], room)
 
 		if i < cp_length - 1:
 			var next_dir := _pick_dir(pos, grid, directions)
 			pos += next_dir
-			used_dirs.append(next_dir)
 
 	# Assign types along critical path
 	critical_path[0].room_type = "spawn"
@@ -80,7 +78,7 @@ func generate(mission : MissionDefinitionResource) -> Array:
 		var branch_room := _make_room(new_pos, parent.depth + 1, false)
 		branch_room.room_type = BRANCH_TYPES[randi() % BRANCH_TYPES.size()]
 		branch_room.shape = "room"
-		_connect_rooms(parent, branch_room, parent_pos)
+		_connect_rooms(parent, branch_room)
 
 		grid[new_pos] = branch_room
 		rooms.append(branch_room)
@@ -106,7 +104,7 @@ func _make_room(pos : Vector2i, depth : int, on_cp : bool) -> RoomData:
 	return r
 
 
-func _connect_rooms(a : RoomData, b : RoomData, _a_grid_pos : Vector2i) -> void:
+func _connect_rooms(a : RoomData, b : RoomData) -> void:
 	if not a.neighbors.has(b):
 		a.neighbors.append(b)
 	if not b.neighbors.has(a):
@@ -136,11 +134,3 @@ func _pick_dir(pos : Vector2i, grid : Dictionary, dirs : Array) -> Vector2i:
 		if not grid.has(pos + d):
 			return d
 	return dirs[0]  # fallback
-
-
-func _last_dir(path : Array, i : int) -> Vector2i:
-	if i == 0:
-		return Vector2i.ZERO
-	var prev : RoomData = path[i - 1]
-	var curr : RoomData = path[i]
-	return Vector2i(curr.grid_x - prev.grid_x, curr.grid_y - prev.grid_y)

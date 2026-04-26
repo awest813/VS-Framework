@@ -22,8 +22,8 @@ class_name TraderStock
 func get_available_stock(player_stance : int) -> Array[TraderStockEntry]:
 	if player_stance > min_stance_required:
 		return []
-	var available : Array[TraderStockEntry] = []
-	for entry in stock:
-		if player_stance <= entry.min_stance:
-			available.append(entry)
-	return available
+		var available : Array[TraderStockEntry] = []
+		for entry in stock:
+			if player_stance <= entry.min_stance:
+				available.append(entry)
+		return available
