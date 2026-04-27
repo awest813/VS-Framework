@@ -32,7 +32,7 @@ func equip_attachment(attachment : WeaponAttachment) -> bool:
 	if not attachment:
 		return false
 	if attachment.slot not in available_slots:
-		push_warning("WeaponModdingComponent: slot %s not available on this weapon." % WeaponAttachment.AttachmentSlot.keys()[attachment.slot])
+		push_warning("WeaponModdingComponent: slot %s not available on this weapon." % _slot_name(attachment.slot))
 		return false
 	if _equipped.has(attachment.slot):
 		push_warning("WeaponModdingComponent: slot already occupied — remove the current attachment first.")
@@ -41,7 +41,7 @@ func equip_attachment(attachment : WeaponAttachment) -> bool:
 	stats_changed.emit()
 	attachment_added.emit(attachment.slot, attachment)
 	CogitoGlobals.debug_log(true, "WeaponModdingComponent",
-		"Equipped " + attachment.attachment_name + " in slot " + WeaponAttachment.AttachmentSlot.keys()[attachment.slot])
+		"Equipped " + attachment.attachment_name + " in slot " + _slot_name(attachment.slot))
 	return true
 
 
@@ -54,7 +54,7 @@ func remove_attachment(slot : WeaponAttachment.AttachmentSlot) -> WeaponAttachme
 	stats_changed.emit()
 	attachment_removed.emit(slot, removed)
 	CogitoGlobals.debug_log(true, "WeaponModdingComponent",
-		"Removed " + removed.attachment_name + " from slot " + WeaponAttachment.AttachmentSlot.keys()[slot])
+		"Removed " + removed.attachment_name + " from slot " + _slot_name(slot))
 	return removed
 
 
@@ -123,3 +123,17 @@ func _sum_float(property : String) -> float:
 	for att : WeaponAttachment in _equipped.values():
 		total += att.get(property) as float
 	return total
+
+
+## Returns a human-readable name for an AttachmentSlot enum value.
+## Avoids out-of-bounds array indexing by using a dictionary lookup instead.
+func _slot_name(slot : WeaponAttachment.AttachmentSlot) -> String:
+	var names : Dictionary = {
+		WeaponAttachment.AttachmentSlot.SIGHT: "SIGHT",
+		WeaponAttachment.AttachmentSlot.MUZZLE: "MUZZLE",
+		WeaponAttachment.AttachmentSlot.GRIP: "GRIP",
+		WeaponAttachment.AttachmentSlot.MAGAZINE: "MAGAZINE",
+		WeaponAttachment.AttachmentSlot.STOCK: "STOCK",
+		WeaponAttachment.AttachmentSlot.TACTICAL: "TACTICAL",
+	}
+	return names.get(slot, "UNKNOWN")

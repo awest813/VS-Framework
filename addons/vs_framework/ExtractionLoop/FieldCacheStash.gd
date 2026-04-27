@@ -120,14 +120,28 @@ func _player_has_key(player : Node) -> bool:
 	if not inventory:
 		return false
 	# Check COGITO inventory slots for the key item name.
-	var slots : Array = inventory.get("inventory_slots") if inventory.get("inventory_slots") != null else []
+	var slots : Array = []
+	if inventory.get("inventory_slots") != null:
+		slots = inventory.inventory_slots
 	for slot in slots:
 		if slot == null:
 			continue
-		var item = slot.get("inventory_item", null) if slot is Dictionary else (slot.inventory_item if "inventory_item" in slot else null)
-		if item and item.get("name", item.name if "name" in item else "") == key_item_name:
+		var item : Object = _get_item_from_slot(slot)
+		if item == null:
+			continue
+		var item_name : String = item.get("name") if item is Dictionary else (item.name if "name" in item else "")
+		if item_name == key_item_name:
 			return true
 	return false
+
+
+## Extracts the inventory item resource from a COGITO slot (Dictionary or Object).
+func _get_item_from_slot(slot) -> Object:
+	if slot is Dictionary:
+		return slot.get("inventory_item", null)
+	if "inventory_item" in slot:
+		return slot.inventory_item
+	return null
 
 
 func _save_contents() -> void:

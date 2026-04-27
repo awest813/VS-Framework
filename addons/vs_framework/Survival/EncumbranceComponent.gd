@@ -97,13 +97,11 @@ func _update_weight() -> void:
 	for slot in slots:
 		if slot == null:
 			continue
-		var item = slot.get("inventory_item") if slot is Dictionary else slot.get("inventory_item", null) if slot.has_method("get") else null
-		if item == null and slot is Object and "inventory_item" in slot:
-			item = slot.inventory_item
+		var item : Object = _get_item_from_slot(slot)
 		if item == null:
 			continue
-		var weight : float = item.get("weight") if item.get("weight") != null else item.weight if "weight" in item else item_fallback_weight
-		var quantity : int = slot.get("quantity") if slot is Dictionary else slot.quantity if "quantity" in slot else 1
+		var weight : float = _get_item_weight(item)
+		var quantity : int = _get_slot_quantity(slot)
 		total += weight * quantity
 
 	current_weight = total
@@ -135,3 +133,32 @@ func _find_references() -> void:
 	_player_node = get_parent()
 	if not fatigue_attribute_path.is_empty():
 		_fatigue_attr = get_node_or_null(fatigue_attribute_path) as FatigueAttribute
+
+
+# ─── Slot / item helpers ───────────────────────────────────────────────────────
+
+## Extracts the InventoryItemPD from a COGITO inventory slot (Dictionary or Object).
+func _get_item_from_slot(slot) -> Object:
+	if slot is Dictionary:
+		return slot.get("inventory_item", null)
+	if "inventory_item" in slot:
+		return slot.inventory_item
+	return null
+
+
+## Returns the weight of an inventory item resource. Falls back to item_fallback_weight.
+func _get_item_weight(item : Object) -> float:
+	if item is Dictionary:
+		return float(item.get("weight", item_fallback_weight))
+	if "weight" in item:
+		return float(item.weight)
+	return item_fallback_weight
+
+
+## Returns the stack quantity from a COGITO inventory slot (Dictionary or Object).
+func _get_slot_quantity(slot) -> int:
+	if slot is Dictionary:
+		return int(slot.get("quantity", 1))
+	if "quantity" in slot:
+		return int(slot.quantity)
+	return 1

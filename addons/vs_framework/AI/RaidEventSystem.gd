@@ -145,11 +145,15 @@ func _fire_extraction_sealed(context : Dictionary) -> void:
 		zone.seal_zone()
 	context["zone_name"] = zone_name
 	extraction_sealed.emit(zone_name)
-	# Automatically reopen after a delay.
+	# Automatically reopen after a delay. Validate the node still exists before calling open_zone.
+	var zone_path : NodePath = zone.get_path() if zone else NodePath("")
 	get_tree().create_timer(randf_range(30.0, 90.0)).timeout.connect(
 		func() -> void:
-			if zone and zone.has_method("open_zone"):
-				zone.open_zone()
+			if zone_path.is_empty():
+				return
+			var reopen_zone : Node = get_node_or_null(zone_path)
+			if is_instance_valid(reopen_zone) and reopen_zone.has_method("open_zone"):
+				reopen_zone.open_zone()
 	)
 
 
