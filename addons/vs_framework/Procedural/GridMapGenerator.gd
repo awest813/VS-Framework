@@ -27,7 +27,7 @@ const LOG_GENERATION_WARNINGS : bool = true
 ## Returns an Array of RoomData objects.
 func generate(mission : MissionDefinitionResource) -> Array:
 	var rng := RandomNumberGenerator.new()
-	rng.seed = mission.level_seed if mission.level_seed != 0 else Time.get_ticks_usec()
+	rng.seed = mission.level_seed if mission.level_seed != 0 else _make_runtime_seed()
 
 	var room_count : int = max(mission.room_count, MIN_ROOM_COUNT)
 	var rooms : Array = []
@@ -123,9 +123,13 @@ func _generate_critical_path_positions(length : int, directions : Array, rng : R
 	for i in range(length):
 		fallback.append(Vector2i(i, 0))
 	CogitoGlobals.debug_log(LOG_GENERATION_WARNINGS, "GridMapGenerator",
-		"Critical path generation exhausted %d retries; using fallback layout of length %d."
+		"Critical path generation exhausted %d retries while searching for a non-overlapping path of length %d; using fallback layout."
 		% [MAX_CRITICAL_PATH_ATTEMPTS, length])
 	return fallback
+
+
+func _make_runtime_seed() -> int:
+	return int(Time.get_ticks_usec()) ^ int(Time.get_unix_time_from_system()) ^ int(get_instance_id())
 
 
 func _connect_rooms(a : RoomData, b : RoomData) -> void:
