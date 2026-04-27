@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SourceIntegrationProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/vs_framework/Integration/SourceIntegrationProfile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+source_name = "skelerealms"
+repository_url = "https://github.com/awest813/skelerealms"
+priority = 1
+reuse_mode = 0
+purpose = "Secondary content and atmosphere source for encounter ideas, enemy presentation, level dressing, item themes, and progression inspiration."
+candidate_modules = Array[String](["AI", "LootEconomy", "Procedural", "Quests", "Progression", "UI"])
+allow_direct_code_reuse = false
+review_notes = "Adapt content patterns where they fit VS Framework modules. Do not replace framework-level systems unless a clear gap remains."

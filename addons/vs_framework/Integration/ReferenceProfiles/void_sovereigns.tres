@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SourceIntegrationProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/vs_framework/Integration/SourceIntegrationProfile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+source_name = "Void-Sovereigns"
+repository_url = "https://github.com/awest813/Void-Sovereigns"
+priority = 0
+reuse_mode = 0
+purpose = "Primary design source for the target Void-Sovereigns/STALKER-style feel: faction concepts, mission structure, loot themes, anomaly ideas, trader economy, hub/raid flow, and worldbuilding."
+candidate_modules = Array[String](["ExtractionLoop", "Factions", "AI", "Anomalies", "LootEconomy", "Procedural", "Quests", "Progression", "UI"])
+allow_direct_code_reuse = false
+review_notes = "Map features onto existing VS Framework and COGITO systems first. Prefer content, data, and progression patterns before any code review."

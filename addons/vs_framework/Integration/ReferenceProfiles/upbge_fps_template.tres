@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SourceIntegrationProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/vs_framework/Integration/SourceIntegrationProfile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+source_name = "upbge-fps-template"
+repository_url = "https://github.com/MolassesLover/upbge-fps-template"
+priority = 3
+reuse_mode = 2
+purpose = "Concept-only FPS reference for combat pacing, weapon feedback, AI pressure, and level flow."
+candidate_modules = Array[String](["AI", "LootEconomy", "Procedural", "Demo"])
+allow_direct_code_reuse = false
+review_notes = "Engine differences make direct reuse expensive. Use only for high-level design ideas not already covered by VS Framework, COGITO, or Godot-native references."
