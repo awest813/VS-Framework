@@ -14,7 +14,7 @@ Designed for Void-Sovereigns / STALKER-style games: first-person runs from a hub
 
 1. Open **Project → Project Settings → Plugins**.
 2. Enable **VS Framework**.
-3. Two autoloads are registered automatically: `ExtractionLoopManager` and `FactionRegistry`.
+3. Four autoloads are registered automatically: `ExtractionLoopManager`, `FactionRegistry`, `QuestManager`, and `PlayerProgression`.
 4. Add `PersistentStashManager` as a manual autoload if you need the persistent stash without the hub scene.
 
 ---
@@ -23,13 +23,15 @@ Designed for Void-Sovereigns / STALKER-style games: first-person runs from a hub
 
 ```
 addons/vs_framework/
-  ExtractionLoop/     # Hub-and-spoke run loop
+  ExtractionLoop/     # Hub-and-spoke run loop, field cache stashes
   Factions/           # Faction definitions and player reputation
-  AI/                 # AIDirector, ALifeSimulator, extended NPC states
+  AI/                 # AIDirector, ALifeSimulator, RaidEventSystem, extended NPC states
   Anomalies/          # Anomaly fields, artifacts, emissions, radiation
-  LootEconomy/        # Tiered loot tables, item condition, trader NPC
-  Survival/           # Hunger/Thirst/Fatigue, bleed, armor
+  LootEconomy/        # Tiered loot tables, item condition, trader NPC, weapon modding, body looting
+  Survival/           # Hunger/Thirst/Fatigue, bleed, armor, encumbrance
   Procedural/         # Mission resources, grid map generator, objectives
+  Quests/             # Quest/contract system with faction reputation integration
+  Progression/        # Player XP, levelling, and skill unlocks
   UI/                 # Hub UI, Raid HUD extension, minimap, death screen
   Demo/               # Demo scene controllers
 ```
@@ -271,7 +273,175 @@ Attach these to the root nodes of your hub and raid scenes. Assign all `@export`
 2. Build a hub scene using COGITO's first-person player, add `DemoHubScene.gd` to the root.
 3. Create `FactionDefinition` resources and assign them to `FactionRegistry.factions`.
 4. Create `MissionDefinitionResource` files for each mission and assign them to `HubUI.mission_definitions`.
-5. Build a raid scene with a NavigationRegion3D, add `DemoRaidZone.gd`, wire all subsystem node exports.
-6. Add `ExtractionZone`, `EmissionEvent`, shelter nodes, and `AnomalyComponent` areas to taste.
-7. Add `HungerAttribute`, `ThirstAttribute`, `FatigueAttribute`, `BleedState`, `ArmorComponent`, and `RadiationAttribute` as children of the player in your player scene.
-8. Deploy and iterate.
+5. Create `QuestDefinition` resources and assign them to `QuestManager.quest_definitions`.
+6. Create `SkillDefinition` resources and assign them to `PlayerProgression.skills`.
+7. Build a raid scene with a NavigationRegion3D, add `DemoRaidZone.gd`, wire all subsystem node exports.
+8. Add `ExtractionZone`, `EmissionEvent`, shelter nodes, `AnomalyComponent` areas, and `FieldCacheStash` nodes to taste.
+9. Add a `RaidEventSystem` node to the raid scene and wire it to `AIDirector` and any extraction zones.
+10. Add `HungerAttribute`, `ThirstAttribute`, `FatigueAttribute`, `BleedState`, `ArmorComponent`, `RadiationAttribute`, and `EncumbranceComponent` as children of the player in your player scene.
+11. Add `WeaponModdingComponent` as a child of each wieldable weapon scene. Assign `available_slots` in the editor.
+12. In your NPC death handler, instantiate a `LootableCorpse` scene at the NPC's world position and assign a `loot_table`.
+13. Deploy and iterate.
+
+---
+
+## Phase 8 — Quest / Contract System
+
+### QuestManager (autoload)
+
+```gdscript
+# Accept a quest from a faction board:
+QuestManager.accept_quest("retrieve_data_core")
+
+# Fire when the player picks up the required item:
+QuestManager.advance_progress("retrieve_data_core", 1)
+
+# Manually complete (e.g. reached extraction zone):
+QuestManager.complete_quest("retrieve_data_core")
+
+# After showing the reward UI:
+QuestManager.hand_in_quest("retrieve_data_core")
+
+# Listen for changes:
+QuestManager.quest_completed.connect(func(id): print("Done: ", id))
+
+# Query the journal:
+var active : Array[QuestEntry] = QuestManager.get_active_quests()
+var available : Array[QuestEntry] = QuestManager.get_available_quests()
+```
+
+### QuestDefinition resource
+
+Create `.tres` files extending `QuestDefinition`. Set `quest_id`, `quest_title`, `giver_faction_id`, `objective_type`, reward fields, and `is_repeatable`. Assign all definitions to `QuestManager.quest_definitions`.
+
+### QuestEntry
+
+Runtime state of each quest. Query via `QuestManager.get_entry(quest_id)`. Use `get_progress_fraction()` and `get_progress_label()` for HUD elements.
+
+---
+
+## Phase 9 — Body Looting
+
+### LootableCorpse
+
+Instantiate from your NPC death handler and add to the current scene:
+
+```gdscript
+# Inside NPC die() override or death signal handler:
+var corpse : LootableCorpse = corpse_scene.instantiate()
+get_tree().current_scene.add_child(corpse)
+corpse.global_position = global_position
+corpse.loot_table = enemy_loot_table
+corpse.guaranteed_items = [{"item_name": "ammo_9mm", "quantity": 15}]
+```
+
+Wire the interact signal from COGITO's `InteractableComponent` on the corpse mesh to `LootableCorpse.interact()`. Connect `looted` to your inventory UI.
+
+---
+
+## Phase 10 — Encumbrance / Weight
+
+### EncumbranceComponent
+
+Add as a child of the player node:
+
+```gdscript
+# In your player movement code:
+var speed_mult : float = encumbrance.get_speed_multiplier()
+velocity = direction * base_speed * speed_mult
+```
+
+Items need a `weight : float` export property (in kg) on their `InventoryItemPD` resource. If absent, `item_fallback_weight` is used. Connect `over_encumbered` and `encumbrance_cleared` to your HUD for status indicators.
+
+---
+
+## Phase 11 — Weapon Modding
+
+### WeaponModdingComponent
+
+Add as a child of any wieldable scene:
+
+```gdscript
+# Attach a suppressor:
+weapon_mods.equip_attachment(suppressor_res)
+
+# Read aggregated stat deltas in your fire() function:
+var damage : float = base_damage + weapon_mods.get_total_damage_modifier()
+var recoil : float = base_recoil + weapon_mods.get_total_recoil_modifier()
+```
+
+### WeaponAttachment resource
+
+Create `.tres` files extending `WeaponAttachment`. Set `slot`, `attachment_id`, and the relevant modifier fields. Present available attachments in the trader UI or a dedicated mod workbench scene.
+
+---
+
+## Phase 12 — Player Skill Progression
+
+### PlayerProgression (autoload)
+
+```gdscript
+# Award XP (also called automatically by QuestManager on completion):
+PlayerProgression.add_xp(250)
+
+# Unlock a skill from the skill tree UI:
+if PlayerProgression.unlock_skill("endurance_1"):
+    # Apply bonuses defined in the SkillDefinition resource to player attributes
+
+# Query state:
+var level : int = PlayerProgression.current_level
+var fraction : float = PlayerProgression.level_progress_fraction()
+var unlockable : Array[SkillDefinition] = PlayerProgression.get_unlockable_skills()
+```
+
+### SkillDefinition resource
+
+Create `.tres` files extending `SkillDefinition`. Set `skill_id`, `xp_required`, `prerequisite_skill_ids`, and the attribute bonus fields. After `skill_unlocked` fires, apply `attribute_max_bonus` and `attribute_rate_multiplier` to the corresponding player attribute node.
+
+---
+
+## Phase 13 — Field Cache Stash
+
+### FieldCacheStash
+
+Place `FieldCacheStash` nodes in your raid level and assign a stable `cache_id`:
+
+```gdscript
+# Deposit an item (e.g. from a nearby loot container):
+field_cache.deposit("v_disk_encrypted", 1)
+
+# Retrieve on a future run:
+var retrieved : int = field_cache.retrieve("v_disk_encrypted", 1)
+```
+
+Wire COGITO's `InteractableComponent` interact signal to `FieldCacheStash.interact()`. Open a container UI showing `get_contents()`. Contents persist to `user://vs_field_caches.res` and survive player death.
+
+---
+
+## Phase 14 — Dynamic Raid Events
+
+### RaidEventSystem
+
+Add one to your raid scene and feed it the room graph:
+
+```gdscript
+# After GridMapGenerator runs:
+raid_events.set_room_graph(rooms)
+
+# Events fire automatically on a timer, or manually:
+raid_events.fire_event(RaidEventSystem.RaidEvent.PATROL_INCURSION)
+
+# Listen for narrative feedback:
+raid_events.patrol_incursion.connect(func(room_id): hud.show_alert("Enemy patrol spotted!"))
+raid_events.extraction_sealed.connect(func(zone): hud.show_alert("Extraction point sealed!"))
+raid_events.loot_cache_marked.connect(func(pos): minimap.mark_cache(pos))
+```
+
+| Event | Description |
+|---|---|
+| `PATROL_INCURSION` | Spawns a new enemy patrol in a random room via AIDirector |
+| `FACTION_SKIRMISH` | Two rooms are flagged as an active inter-faction fight |
+| `EXTRACTION_SEALED` | A random ExtractionZone is temporarily sealed |
+| `LOOT_CACHE_MARKED` | A hidden loot cache position is broadcast (show on minimap) |
+| `ANOMALY_SURGE` | Signals anomaly components in a room to intensify |
+| `REINFORCEMENT_CALL` | Triggers a reinforcement wave via AIDirector |
