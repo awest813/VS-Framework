@@ -117,6 +117,8 @@ func _generate_critical_path_positions(length : int, directions : Array, rng : R
 	var fallback : Array[Vector2i] = []
 	for i in range(length):
 		fallback.append(Vector2i(i, 0))
+	CogitoGlobals.debug_log(true, "GridMapGenerator",
+		"Critical path generation exhausted retries; using fallback layout of length %d." % length)
 	return fallback
 
 
