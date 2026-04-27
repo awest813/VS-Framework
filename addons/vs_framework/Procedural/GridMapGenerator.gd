@@ -123,8 +123,9 @@ func _generate_critical_path_positions(length : int, directions : Array, rng : R
 	for i in range(length):
 		fallback.append(Vector2i(i, 0))
 	CogitoGlobals.debug_log(LOG_GENERATION_WARNINGS, "GridMapGenerator",
-		"Critical path generation exhausted %d retries while searching for a non-overlapping path of length %d; using fallback layout."
-		% [MAX_CRITICAL_PATH_ATTEMPTS, length])
+		"Critical path generation exhausted " + str(MAX_CRITICAL_PATH_ATTEMPTS)
+		+ " retries while searching for a non-overlapping path of length " + str(length)
+		+ "; using fallback layout.")
 	return fallback
 
 
@@ -173,8 +174,9 @@ func _update_room_shapes(rooms : Array) -> void:
 		room.shape = _shape_for_exits(room.exits)
 
 
-## 3+ exits become junctions, 2 aligned exits become straight corridors,
-## 2 perpendicular exits become turns, and 0/1-exit dead ends stay as rooms.
+## Maps exit counts to geometry hints:
+## 0/1 exits stay as rooms, 2 aligned exits become straight corridors,
+## 2 perpendicular exits become turns, and 3+ exits become junctions.
 func _shape_for_exits(exits : Array[String]) -> String:
 	if exits.size() >= 3:
 		return "junction"
@@ -191,6 +193,7 @@ func _shape_for_exits(exits : Array[String]) -> String:
 	return "corridor_turn"
 
 
+## Removes duplicate exit directions while preserving their original order.
 func _unique_exits(exits : Array[String]) -> Array[String]:
 	var seen : Dictionary = {}
 	var unique : Array[String] = []
