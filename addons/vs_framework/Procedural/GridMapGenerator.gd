@@ -125,12 +125,12 @@ func _generate_critical_path_positions(length : int, directions : Array, rng : R
 	CogitoGlobals.debug_log(LOG_GENERATION_WARNINGS, "GridMapGenerator",
 		"Critical path generation exhausted " + str(MAX_CRITICAL_PATH_ATTEMPTS)
 		+ " retries while searching for a non-overlapping path of length " + str(length)
-		+ "; using fallback layout.")
+		+ "; using fallback layout. This usually means the requested path got trapped during random growth.")
 	return fallback
 
 
 func _make_runtime_seed() -> int:
-	return int(Time.get_ticks_usec()) ^ int(Time.get_unix_time_from_system()) ^ int(get_instance_id())
+	return int(Time.get_ticks_usec()) ^ (int(Time.get_unix_time_from_system()) << 32) ^ int(get_instance_id())
 
 
 func _connect_rooms(a : RoomData, b : RoomData) -> void:
