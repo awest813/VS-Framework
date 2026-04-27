@@ -1,0 +1,13 @@
+[gd_resource type="Resource" script_class="SourceIntegrationCatalog" load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://addons/vs_framework/Integration/SourceIntegrationCatalog.gd" id="1"]
+[ext_resource type="Script" path="res://addons/vs_framework/Integration/SourceIntegrationProfile.gd" id="2"]
+[ext_resource type="Resource" path="res://addons/vs_framework/Integration/ReferenceProfiles/void_sovereigns.tres" id="3"]
+[ext_resource type="Resource" path="res://addons/vs_framework/Integration/ReferenceProfiles/skelerealms.tres" id="4"]
+[ext_resource type="Resource" path="res://addons/vs_framework/Integration/ReferenceProfiles/godot4_fps_template.tres" id="5"]
+[ext_resource type="Resource" path="res://addons/vs_framework/Integration/ReferenceProfiles/upbge_fps_template.tres" id="6"]
+[ext_resource type="Resource" path="res://addons/vs_framework/Integration/ReferenceProfiles/sunone_aimbot.tres" id="7"]
+
+[resource]
+script = ExtResource("1")
+sources = Array[ExtResource("2")]([ExtResource("3"), ExtResource("4"), ExtResource("5"), ExtResource("6"), ExtResource("7")])

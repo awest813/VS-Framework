@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SourceIntegrationProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/vs_framework/Integration/SourceIntegrationProfile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+source_name = "sunone_aimbot"
+repository_url = "https://github.com/SunOner/sunone_aimbot"
+priority = 4
+reuse_mode = 3
+purpose = "Explicitly blocked source. It is unrelated to the intended VS Framework gameplay goals and should not be integrated."
+candidate_modules = Array[String]([])
+allow_direct_code_reuse = false
+review_notes = "Do not use for content, code, implementation patterns, or gameplay systems."

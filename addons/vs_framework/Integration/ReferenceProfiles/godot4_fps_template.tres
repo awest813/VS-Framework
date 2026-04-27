@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SourceIntegrationProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/vs_framework/Integration/SourceIntegrationProfile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+source_name = "Godot4-FPS-Template"
+repository_url = "https://github.com/chafmere/Godot4-FPS-Template"
+priority = 2
+reuse_mode = 1
+purpose = "Godot-native implementation reference for FPS feel, weapon handling, camera polish, interaction UX, HUD patterns, and scene organization."
+candidate_modules = Array[String](["LootEconomy", "Survival", "UI", "Demo"])
+allow_direct_code_reuse = false
+review_notes = "Borrow architecture ideas selectively. Enable direct code reuse only after license, Godot 4 compatibility, and duplicate-functionality checks pass."

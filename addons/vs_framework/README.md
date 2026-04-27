@@ -34,7 +34,43 @@ addons/vs_framework/
   Progression/        # Player XP, levelling, and skill unlocks
   UI/                 # Hub UI, Raid HUD extension, minimap, death screen
   Demo/               # Demo scene controllers
+  Integration/        # External reference-source profiles and import policy
 ```
+
+---
+
+## Reference Integration Workflow
+
+VS Framework should remain the gameplay core, with COGITO providing the first-person immersive-sim foundation. External projects are treated as reviewed references or content donors through `Integration/reference_integration_catalog.tres`.
+
+### Source Priority
+
+| Priority | Source | Use |
+|---|---|---|
+| 1 | `Void-Sovereigns` | Primary design source for factions, missions, loot themes, anomalies, trader economy, hub/raid flow, and worldbuilding. |
+| 2 | `skelerealms` | Secondary content source for atmosphere, encounters, enemy presentation, level dressing, item themes, and progression inspiration. |
+| 3 | `Godot4-FPS-Template` | Godot-native FPS implementation reference for weapon feel, camera polish, interaction UX, HUD patterns, and scene organization. |
+| 4 | `upbge-fps-template` | Concept-only reference for combat pacing, weapon feedback, AI pressure, and level flow. |
+| Blocked | `sunone_aimbot` | Do not integrate. It is unrelated to the framework goals and is explicitly excluded. |
+
+### Practical Rules
+
+1. Map `Void-Sovereigns` features onto existing VS Framework modules before adding new systems.
+2. Prefer content, data structures, progression ideas, and scene patterns over direct code reuse.
+3. Only consider code from Godot 4-compatible sources when it does not duplicate COGITO or VS Framework functionality.
+4. Treat UPBGE sources as design inspiration only because engine differences make direct reuse expensive.
+5. Keep blocked sources in the catalog to document exclusions and prevent accidental integration.
+
+### Runtime/Data Access
+
+Load the default catalog when editor tools or game setup screens need to show approved source mappings:
+
+```gdscript
+var catalog : SourceIntegrationCatalog = load("res://addons/vs_framework/Integration/reference_integration_catalog.tres")
+var faction_sources : Array[SourceIntegrationProfile] = catalog.get_sources_for_module("Factions")
+```
+
+Use `SourceIntegrationProfile.can_use_content_data()`, `can_use_as_concept_reference()`, and `can_reuse_code()` before importing or adapting work from a source.
 
 ---
 
