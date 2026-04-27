@@ -15,6 +15,10 @@ class_name GridMapGenerator
 
 ## Room type probabilities for non-critical-path branch endings.
 const BRANCH_TYPES : Array = ["loot", "airlock", "loot", "loot"]
+## Minimum layout size needed to guarantee spawn, objective, and extraction rooms.
+const MIN_ROOM_COUNT : int = 3
+## Prevents branch growth from looping forever when most adjacent tiles are occupied.
+const MAX_BRANCH_ATTEMPTS_PER_ROOM : int = 3
 const MAX_CRITICAL_PATH_ATTEMPTS : int = 32
 
 
@@ -24,14 +28,14 @@ func generate(mission : MissionDefinitionResource) -> Array:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = mission.level_seed if mission.level_seed != 0 else randi()
 
-	var room_count : int = max(mission.room_count, 3)
+	var room_count : int = max(mission.room_count, MIN_ROOM_COUNT)
 	var rooms : Array = []
 	var grid : Dictionary = {}  # {Vector2i: RoomData}
 
 	# ── Build critical path ────────────────────────────────────────────────────
 	var critical_path : Array = []
 	var directions := [Vector2i(1, 0), Vector2i(0, 1), Vector2i(-1, 0), Vector2i(0, -1)]
-	var cp_length : int = max(3, room_count / 2)
+	var cp_length : int = max(MIN_ROOM_COUNT, room_count / 2)
 	var path_positions : Array[Vector2i] = _generate_critical_path_positions(cp_length, directions, rng)
 	for i in range(path_positions.size()):
 		var pos : Vector2i = path_positions[i]
@@ -54,7 +58,7 @@ func generate(mission : MissionDefinitionResource) -> Array:
 	# ── Grow branches ──────────────────────────────────────────────────────────
 	var branch_budget : int = room_count - cp_length
 	var attempts : int = 0
-	while branch_budget > 0 and attempts < room_count * 3:
+	while branch_budget > 0 and attempts < room_count * MAX_BRANCH_ATTEMPTS_PER_ROOM:
 		attempts += 1
 		var parent : RoomData = rooms[rng.randi_range(0, rooms.size() - 1)]
 		var parent_pos := Vector2i(parent.grid_x, parent.grid_y)
