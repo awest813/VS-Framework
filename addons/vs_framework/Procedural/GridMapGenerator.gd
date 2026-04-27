@@ -20,6 +20,7 @@ const MIN_ROOM_COUNT : int = 3
 ## Prevents branch growth from looping forever when most adjacent tiles are occupied.
 const MAX_BRANCH_ATTEMPTS_PER_ROOM : int = 3
 const MAX_CRITICAL_PATH_ATTEMPTS : int = 32
+const LOG_GENERATION_WARNINGS : bool = true
 
 
 ## Generates a RoomData graph from a MissionDefinitionResource.
@@ -121,7 +122,7 @@ func _generate_critical_path_positions(length : int, directions : Array, rng : R
 	var fallback : Array[Vector2i] = []
 	for i in range(length):
 		fallback.append(Vector2i(i, 0))
-	CogitoGlobals.debug_log(true, "GridMapGenerator",
+	CogitoGlobals.debug_log(LOG_GENERATION_WARNINGS, "GridMapGenerator",
 		"Critical path generation exhausted retries; using fallback layout of length %d." % length)
 	return fallback
 
@@ -167,6 +168,8 @@ func _update_room_shapes(rooms : Array) -> void:
 		room.shape = _shape_for_exits(room.exits)
 
 
+## 3+ exits become junctions, 2 aligned exits become straight corridors,
+## 2 perpendicular exits become turns, and all other cases stay as rooms.
 func _shape_for_exits(exits : Array[String]) -> String:
 	if exits.size() >= 3:
 		return "junction"
@@ -184,8 +187,11 @@ func _shape_for_exits(exits : Array[String]) -> String:
 
 
 func _unique_exits(exits : Array[String]) -> Array[String]:
+	var seen : Dictionary = {}
 	var unique : Array[String] = []
 	for exit_dir in exits:
-		if not unique.has(exit_dir):
-			unique.append(exit_dir)
+		if seen.has(exit_dir):
+			continue
+		seen[exit_dir] = true
+		unique.append(exit_dir)
 	return unique
