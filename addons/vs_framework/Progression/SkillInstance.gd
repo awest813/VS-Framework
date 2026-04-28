@@ -16,10 +16,13 @@ signal rank_changed(instance : SkillInstance)
 var skill : SkillDefinition
 
 ## Current rank. 0 = not yet unlocked; max = skill.max_rank.
+## rank_changed is emitted on any assignment so that direct rank restoration
+## (e.g. during save-load) and upgrade()/downgrade() all behave consistently.
 var curr_rank : int = 0:
 	get: return curr_rank
 	set(value):
 		curr_rank = clampi(value, 0, skill.max_rank)
+		rank_changed.emit(self)
 
 
 func _init(definition : SkillDefinition) -> void:
@@ -31,13 +34,11 @@ func is_max_rank() -> bool:
 	return curr_rank >= skill.max_rank
 
 
-## Increments rank by one and emits rank_changed.
+## Increments rank by one (rank_changed is emitted by the setter).
 func upgrade() -> void:
 	curr_rank += 1
-	rank_changed.emit(self)
 
 
-## Decrements rank by one and emits rank_changed.
+## Decrements rank by one (rank_changed is emitted by the setter).
 func downgrade() -> void:
 	curr_rank -= 1
-	rank_changed.emit(self)

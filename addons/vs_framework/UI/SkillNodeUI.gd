@@ -60,8 +60,7 @@ func set_skill_instance(instance : SkillInstance) -> void:
 ## Refreshes the rank label and icon to match the current instance state.
 func _refresh_visuals() -> void:
 	if associated_skill and skill_icon and associated_skill.tiers.size() > 0:
-		skill_icon.texture = associated_skill.tiers[0].get("display_icon", null) \
-			if associated_skill else null
+		skill_icon.texture = associated_skill.tiers[0].get("display_icon", null)
 
 	var cur : int = skill_instance.curr_rank if skill_instance else 0
 	var max_r : int = associated_skill.max_rank if associated_skill else 1

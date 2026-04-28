@@ -59,7 +59,7 @@ var max_rank : int:
 ## Returns the attribute_max_bonus effective at the given rank (1-based).
 ## Falls back to the top-level attribute_max_bonus for single-rank skills.
 func get_bonus_at_rank(rank : int) -> float:
-	if tiers.is_empty() or rank <= 0:
+	if tiers.is_empty() or rank < 1:
 		return attribute_max_bonus
 	return tiers[mini(rank, tiers.size()) - 1].attribute_max_bonus
 
@@ -67,7 +67,7 @@ func get_bonus_at_rank(rank : int) -> float:
 ## Returns the attribute_rate_multiplier effective at the given rank (1-based).
 ## Falls back to the top-level attribute_rate_multiplier for single-rank skills.
 func get_rate_multiplier_at_rank(rank : int) -> float:
-	if tiers.is_empty() or rank <= 0:
+	if tiers.is_empty() or rank < 1:
 		return attribute_rate_multiplier
 	return tiers[mini(rank, tiers.size()) - 1].attribute_rate_multiplier
 
