@@ -382,7 +382,7 @@ wear_per_use = 0.1
 [node name="WeaponMods" type="Node" parent="."]
 script = ExtResource("7_mods")
 
-[node name="VSWeaponIntegration" type="Node" parent="."]
+[node name="CogitoWeaponIntegration" type="Node" parent="."]
 script = ExtResource("8_bridge")
 
 [node name="MuzzleFlash" type="GPUParticles3D" parent="."]
