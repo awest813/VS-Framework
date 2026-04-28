@@ -34,12 +34,14 @@ var firing_cooldown : float
 var player_rid : RID
 
 var inventory_item_reference : WieldableItemPD
+var weapon_integration : CogitoWeaponIntegration
 
 
 func _ready():
 	wieldable_mesh.hide()
 	firing_cooldown = 0
 	player_rid = CogitoSceneManager._current_player_node.get_rid()
+	weapon_integration = _get_weapon_integration()
 
 
 func _physics_process(_delta: float) -> void:
@@ -49,6 +51,9 @@ func _physics_process(_delta: float) -> void:
 	if is_firing:
 		if firing_cooldown <= 0:
 			if animation_player.is_playing():
+				return
+			if weapon_integration and not weapon_integration.consume_shot():
+				is_firing = false
 				return
 			# Gettting camera_collision pos from player interaction component:
 			var _camera_collision = player_interaction_component.Get_Camera_Collision()
@@ -127,7 +132,7 @@ func hit_scan_collision(collision_point:Vector3):
 
 func hit_scan_damage(collider, bullet_direction, bullet_position):
 	if collider.has_signal("damage_received"):
-		collider.damage_received.emit(item_reference.wieldable_damage,bullet_direction,bullet_position)
+		collider.damage_received.emit(_get_modified_damage(item_reference.wieldable_damage),bullet_direction,bullet_position)
 
 
 func hit_scan_scene(bullet_collision):
@@ -140,6 +145,8 @@ func hit_scan_scene(bullet_collision):
 
 # Function called when wieldable reload is attempted
 func reload():
+	if weapon_integration:
+		weapon_integration.notify_reload_started()
 	animation_player.play(anim_reload)
 	audio_stream_player_3d.stream = sound_reload
 	audio_stream_player_3d.play()
@@ -150,3 +157,16 @@ func equip(_player_interaction_component: PlayerInteractionComponent):
 	spawn_node = get_tree().get_current_scene()
 	animation_player.play(anim_equip)
 	player_interaction_component = _player_interaction_component
+
+
+func _get_modified_damage(base_damage : float) -> float:
+	if weapon_integration:
+		return weapon_integration.get_modified_damage(base_damage)
+	return base_damage
+
+
+func _get_weapon_integration() -> CogitoWeaponIntegration:
+	for child in get_children():
+		if child is CogitoWeaponIntegration:
+			return child
+	return null

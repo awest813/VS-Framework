@@ -412,6 +412,18 @@ var recoil : float = base_recoil + weapon_mods.get_total_recoil_modifier()
 
 Create `.tres` files extending `WeaponAttachment`. Set `slot`, `attachment_id`, and the relevant modifier fields. Present available attachments in the trader UI or a dedicated mod workbench scene.
 
+### COGITO Weapon Integration
+
+COGITO's pistol and laser rifle wieldables now look for an optional `CogitoWeaponIntegration` child. Add it alongside `ItemCondition` and `WeaponModdingComponent` on any COGITO `CogitoWieldable` scene to apply VS Framework weapon condition and attachment stats while keeping COGITO's inventory, ammo, reload, and wieldable flow intact.
+
+On each shot, the integration component:
+- applies `ItemCondition.take_wear()` and blocks fire if the weapon jams or breaks;
+- applies `WeaponModdingComponent.get_total_damage_modifier()` to projectile/hitscan damage;
+- exposes helper methods for accuracy, recoil, and magazine modifiers for custom weapons;
+- clears jams on reload by default.
+
+This is the concrete integration point for weapon-system ideas from `Godot-Simple-FPS-Weapon-System-Asset`: reuse its weapon-feel patterns through COGITO-compatible components rather than importing its demo assets or replacing the COGITO wieldable pipeline.
+
 ---
 
 ## Phase 12 — Player Skill Progression
