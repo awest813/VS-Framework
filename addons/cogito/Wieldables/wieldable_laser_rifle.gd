@@ -52,6 +52,7 @@ func _physics_process(_delta: float) -> void:
 		if firing_cooldown <= 0:
 			if animation_player.is_playing():
 				return
+			# Keep auto-fire queued while animations enforce fire rate; stop only when condition blocks firing.
 			if weapon_integration and not weapon_integration.consume_shot():
 				is_firing = false
 				return

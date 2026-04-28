@@ -41,7 +41,7 @@ func consume_shot() -> bool:
 func notify_reload_started() -> void:
 	_resolve_components()
 	if clear_jam_on_reload and item_condition and item_condition.is_jammed:
-		item_condition.repair(0.0)
+		item_condition.clear_jam()
 
 
 func get_modified_damage(base_damage : float) -> float:
