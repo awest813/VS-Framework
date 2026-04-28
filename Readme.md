@@ -1,74 +1,170 @@
-# COGITO has moved to Codeberg!
+# VS Framework
 
-> [!IMPORTANT]
-> Please go the [Codeberg repo](https://codeberg.org/Phazorknight/Cogito) for the latest versions, documentation and issues.
+[![GodotEngine](https://img.shields.io/badge/Godot_4.4+-blue?logo=godotengine&logoColor=white)](https://godotengine.org/)
+[![Version](https://img.shields.io/badge/version_0.1.0-35A1D7?label=VS%20Framework&labelColor=0E4488)](https://github.com/awest813/VS-Framework)
+[![License](https://img.shields.io/github/license/awest813/VS-Framework)](LICENSE)
 
-![COGITO_MovedToCodeberg](CogitoMovedToCodeberg.png)
+A Godot 4 extraction/zone game framework built on top of [COGITO](https://codeberg.org/Phazorknight/Cogito).
+Designed for **Void-Sovereigns / STALKER-style** games: first-person runs from a hub into dangerous zones with loot, AI pressure, anomalies, and permanent gear-loss stakes.
 
-![COGITO_banner](addons/cogito/COGITO_banner.jpg)
+---
 
-# COGITO
+## Features
 
-[![GodotEngine](https://img.shields.io/badge/Godot_4.4_stable-blue?logo=godotengine&logoColor=white)](https://godotengine.org/) [![COGITO](https://img.shields.io/badge/version_1.1.5-35A1D7?label=COGITO&labelColor=0E887A)](https://github.com/Phazorknight/Cogito)
+| System | What it provides |
+|---|---|
+| **Extraction Loop** | Hub → Mission Select → Deploy → In-Raid → Extract → Debrief state machine |
+| **Persistent Stash** | Cross-run item and currency storage that survives death |
+| **Field Cache Stash** | In-raid hidden stashes that persist across runs |
+| **Faction Registry** | Faction definitions, player reputation, and inter-faction hostility |
+| **AI Director** | Room-graph-driven enemy spawning with reinforcement waves |
+| **A-Life Simulator** | Fast-resolves off-screen faction conflicts when the player returns to hub |
+| **Extended NPC States** | Alert → Search → Hunt → Flank states layered on top of COGITO's NPC state machine |
+| **Anomaly System** | Damage fields, artifact spawning, radiation attribute, and emission events |
+| **Loot Economy** | Tiered loot tables, item condition, trader NPC, weapon modding, body looting |
+| **Survival** | Hunger, Thirst, Fatigue, Bleed, Armor, and Encumbrance attributes |
+| **Procedural Missions** | Seeded grid-map generation, five objective types, and room activity streaming |
+| **Quest / Contract System** | Faction-tied quests with journal, progress tracking, and repeatable contracts |
+| **Player Progression** | XP, levelling, and a skill-tree with prerequisite chains |
+| **Dynamic Raid Events** | Patrol incursions, faction skirmishes, extraction sealing, anomaly surges |
+| **Weapon Modding** | Slot-based attachments with aggregated stat deltas, integrated with COGITO wieldables |
+| **UI Suite** | Hub UI, Raid HUD extension, minimap, death screen |
 
-## What is it?
-Cogito is a First Person Immersive Sim Template Project for Godot 4, providing a framework for creating interactable objects, various items to use and mechanics to influence the player and game environment.
-In short, with COGITO you get a quick start for a fully-featured first person game with a great variety of mechanics and a solid base to create your own.
+---
 
-### [Online documentation](https://cogito.readthedocs.io/en/latest/index.html)
-### [Video tutorial series](https://cogito.readthedocs.io/en/latest/tutorials.html)
-### [Cogito in the Godot Asset Store (beta)](https://store-beta.godotengine.org/asset/philip-drobar/cogito)
+## Requirements
 
-### Current Features
-- First person player controller with:
-  - Sprinting, jumping, crouching, sliding, stairs handling, ladder handling, sitting
-  - Lots of exposed properties to tweak to your liking (speeds, headbob, fall damage, bunnyhop, etc.)
-  - Easy-to-use dynamic footstep sound system
-- Player Attribute System
-  - Health, Stamina, Visibility for stealth, etc
-  - Customize how attributes get displayed in the HUD (or stay hidden)
-  - Also useable for RPG-like attributes (Strength, Wisdom, etc)
-  - Interactions can check attributes (eg. you can only lift a box if you're strong enough)
-- Interaction System
-  - Component-based interactions makes it easy to turn your own objects interactive quickly and customize existing ones
-  - Examples for interactive objects like doors, drawers, boxes to carry, turn-wheels, elevators, notes, keypads
-- Inventory System
-  - Flexible resource-based inventories
-  - Grid-based (think Resident Evil 4)
-  - Inventory UI separate from inventory logic
-  - Examples for multiple item types (consumables, keys, ammo, weapons, combinable Items)
-  - Base class to easily add your custom item types
-  - Containers with their own inventories
-- Basic NPC
-  - NavigationAgent based enemy with component-based state machine + animation states
-  - Simple player detection system that uses detection areas + basic line-of-sight checks
-- Main menu, pause menu and Options menu
-- Rebindable controls
-- Full game pad support!
-- Save and Load System as well as scene persistency
-- Localization!
-- Support for other plugins:
-  - Works with Dialogic
-  - Works with Dialgue Manager
-- Work in progress:
-  - Systemic Properties (wet/dry, flammable/on fire, soft, etc) (very WIP)
-  - Basic Quest System
+- **Godot 4.4+**
+- [COGITO](https://codeberg.org/Phazorknight/Cogito) — already bundled under `addons/cogito/`
 
-### Comes with fully featured Demo Scenes
-- Set up like a game level including a variety of objects, weapons and quests
-- Demo scenes contains hints that explain how objects in the scene were set up
+---
 
-COGITO is made by [Philip Drobar](https://www.philipdrobar.com) with help from [these contributors](https://github.com/Phazorknight/Cogito/graphs/contributors).
+## Installation
 
-## Principles of this template
-The structure of this template always tries to adhere to the following principles:
-- **Complete**: When you download COGITO and press play, you get a functioning project out of the box. Game menu, save slot select, options and a playable level are all included.
-- **Versatile**: Whether your game is set in the future, the past or the present, use melee, projectile or no weapons at all, have low poly, stylized or realistic graphics, the template will have features for you.
-- **Modular**: Do not want to use a feature? You will be able to hide it, ignore it or strip it out without breaking COGITO. At the same time, COGITO is designed to be extendable with your own custom features or other add-ons.
-- **Approachable**: While there will always be a learning curve, we strive to make COGTIO approachable and intuitive to use, so it doesn't get in your way of making your game.
-- **No Generative AI**: All included code and assets are made by humans and listed in our credits and cotnributors page.
+1. Clone or download this repository into your Godot project root.
+2. Open **Project → Project Settings → Plugins**.
+3. Enable **VS Framework**.
 
-> [!IMPORTANT]  
-> COGITO v1.1 is not 100% bug-free. While most features are set, be aware that this open source software is offered "as is". Use at your own risk and check Issues and Discussion pages for more information.
+Four autoloads are registered automatically:
 
-[Credits, Contributors and License](https://cogito.readthedocs.io/en/latest/about.html)
+| Autoload | Path |
+|---|---|
+| `ExtractionLoopManager` | `addons/vs_framework/ExtractionLoop/ExtractionLoopManager.gd` |
+| `FactionRegistry` | `addons/vs_framework/Factions/FactionRegistry.gd` |
+| `QuestManager` | `addons/vs_framework/Quests/QuestManager.gd` |
+| `PlayerProgression` | `addons/vs_framework/Progression/PlayerProgression.gd` |
+
+> **Note:** `PersistentStashManager` is **not** auto-registered. Add it manually as an autoload if you need persistent stash functionality outside of the hub scene.
+
+---
+
+## Project Structure
+
+```
+addons/vs_framework/
+  ExtractionLoop/     # Hub-and-spoke run loop, field cache stashes
+  Factions/           # Faction definitions and player reputation
+  AI/                 # AIDirector, ALifeSimulator, RaidEventSystem, extended NPC states
+  Anomalies/          # Anomaly fields, artifacts, emissions, radiation
+  LootEconomy/        # Tiered loot tables, item condition, trader NPC, weapon modding, body looting
+  Survival/           # Hunger/Thirst/Fatigue, bleed, armor, encumbrance
+  Procedural/         # Mission resources, grid-map generator, objectives
+  Quests/             # Quest/contract system with faction reputation integration
+  Progression/        # Player XP, levelling, and skill unlocks
+  UI/                 # Hub UI, Raid HUD extension, minimap, death screen
+  Demo/               # Demo scene controllers
+  Integration/        # External reference-source profiles and import policy
+```
+
+---
+
+## Quick Start
+
+### 1 — Extraction Loop
+
+```gdscript
+# Accept a mission from the Mission Board UI:
+ExtractionLoopManager.select_mission("my_mission_id")
+
+# Deploy (pass the player's pre-raid stash snapshot):
+ExtractionLoopManager.deploy(stash_manager.stash_items)
+
+# Load the raid scene when the signal fires:
+ExtractionLoopManager.raid_started.connect(func(session):
+    CogitoSceneManager.load_scene("res://scenes/raid_zone.tscn"))
+
+# Trigger extraction from an ExtractionZone (automatic) or manually:
+ExtractionLoopManager.begin_extraction()
+ExtractionLoopManager.complete_extraction(extracted_items, earned_currency)
+
+# Handle player death:
+ExtractionLoopManager.player_died()
+
+# Return to hub from the debrief screen:
+ExtractionLoopManager.close_debrief()
+```
+
+### 2 — Factions
+
+```gdscript
+FactionRegistry.get_reputation("bandits")          # → int
+FactionRegistry.change_reputation("military", 50)
+FactionRegistry.get_stance("loners")               # → 0 Friendly / 1 Neutral / 2 Hostile
+FactionRegistry.are_factions_hostile("bandits", "military")
+```
+
+Reputation persists to `user://vs_factions.res`.
+
+### 3 — Quests
+
+```gdscript
+QuestManager.accept_quest("retrieve_data_core")
+QuestManager.advance_progress("retrieve_data_core", 1)
+QuestManager.complete_quest("retrieve_data_core")
+QuestManager.hand_in_quest("retrieve_data_core")
+
+var active : Array[QuestEntry] = QuestManager.get_active_quests()
+```
+
+### 4 — Player Progression
+
+```gdscript
+PlayerProgression.add_xp(250)
+PlayerProgression.unlock_skill("endurance_1")
+
+var level : int    = PlayerProgression.current_level
+var frac  : float  = PlayerProgression.level_progress_fraction()
+```
+
+---
+
+## Setting Up a New Game
+
+1. Create a Godot 4 project with COGITO and VS Framework enabled.
+2. Build a hub scene using COGITO's first-person player; attach `Demo/DemoHubScene.gd` to the root.
+3. Create `FactionDefinition` resources and assign them to `FactionRegistry.factions`.
+4. Create `MissionDefinitionResource` files for each mission and assign them to `HubUI.mission_definitions`.
+5. Create `QuestDefinition` resources and assign them to `QuestManager.quest_definitions`.
+6. Create `SkillDefinition` resources and assign them to `PlayerProgression.skills`.
+7. Build a raid scene with a `NavigationRegion3D`; attach `Demo/DemoRaidZone.gd` and wire all subsystem exports.
+8. Add `ExtractionZone`, `EmissionEvent`, shelter nodes, `AnomalyComponent` areas, and `FieldCacheStash` nodes to taste.
+9. Add `RaidEventSystem` to the raid scene and wire it to `AIDirector` and any extraction zones.
+10. Add survival components as children of the player node: `HungerAttribute`, `ThirstAttribute`, `FatigueAttribute`, `BleedState`, `ArmorComponent`, `RadiationAttribute`, `EncumbranceComponent`.
+11. Add `WeaponModdingComponent` (and optionally `CogitoWeaponIntegration`) as children of each wieldable weapon scene.
+12. In your NPC death handler, instantiate a `LootableCorpse` at the NPC's world position and assign a `loot_table`.
+
+---
+
+## Detailed Documentation
+
+Full API reference, GDScript examples, and setup guides for every system live in:
+
+📄 [`addons/vs_framework/README.md`](addons/vs_framework/README.md)
+
+---
+
+## License
+
+See [LICENSE](LICENSE).
+
+COGITO is made by [Philip Drobar](https://www.philipdrobar.com) and contributors — see [COGITO credits](https://cogito.readthedocs.io/en/latest/about.html).
