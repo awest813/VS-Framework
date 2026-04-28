@@ -49,8 +49,8 @@ func get_modified_damage(base_damage : float) -> float:
 	var damage : float = base_damage
 	if weapon_mods:
 		damage += weapon_mods.get_total_damage_modifier()
-	if item_condition and item_condition.condition <= item_condition.jam_threshold:
-		damage *= item_condition.degraded_damage_multiplier
+	if item_condition:
+		damage *= item_condition.get_weapon_damage_multiplier()
 	return maxf(damage, 0.0)
 
 

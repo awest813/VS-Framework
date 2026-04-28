@@ -56,7 +56,7 @@ func _physics_process(_delta: float) -> void:
 			if weapon_integration and not weapon_integration.consume_shot():
 				is_firing = false
 				return
-			# Gettting camera_collision pos from player interaction component:
+			# Getting camera_collision pos from player interaction component:
 			var _camera_collision = player_interaction_component.Get_Camera_Collision()
 			hit_scan_collision(_camera_collision) #Do the hitscan
 		
