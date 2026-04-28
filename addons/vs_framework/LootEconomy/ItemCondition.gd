@@ -59,6 +59,19 @@ func repair(amount : float) -> void:
 	condition_changed.emit(condition)
 
 
+## Clear a weapon jam without changing condition.
+func clear_jam() -> void:
+	is_jammed = false
+	condition_changed.emit(condition)
+
+
+## Damage multiplier for weapons using this condition component.
+func get_weapon_damage_multiplier() -> float:
+	if condition <= jam_threshold:
+		return degraded_damage_multiplier
+	return 1.0
+
+
 ## Returns a string label for the HUD tooltip.
 func get_condition_label() -> String:
 	if is_broken:

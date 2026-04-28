@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SourceIntegrationProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/vs_framework/Integration/SourceIntegrationProfile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+source_name = "Godot-Simple-FPS-Weapon-System-Asset"
+repository_url = "https://github.com/Jeh3no/Godot-Simple-FPS-Weapon-System-Asset"
+priority = 2
+reuse_mode = 1
+purpose = "Godot-native implementation reference for FPS weapon presentation, viewmodel handling, recoil, sway, reload flow, and shared-ammo patterns that can complement COGITO without replacing its core inventory/wieldable stack."
+candidate_modules = Array[String](["LootEconomy", "UI", "Demo"])
+allow_direct_code_reuse = false
+review_notes = "Use as a reviewed weapon-feel and presentation reference only. Do not import the GPLv3 demo weapon models/textures, and do not replace COGITO's existing wieldable, ammo, or inventory architecture without a separate gap analysis."

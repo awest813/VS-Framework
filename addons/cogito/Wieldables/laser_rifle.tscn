@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=4 uid="uid://bb8pm2nk8hwon"]
+[gd_scene load_steps=29 format=4 uid="uid://bb8pm2nk8hwon"]
 
 [ext_resource type="Script" uid="uid://dvqmxegk58dhe" path="res://addons/cogito/Wieldables/wieldable_laser_rifle.gd" id="1_2rut3"]
 [ext_resource type="AudioStream" uid="uid://clsajk36s7luk" path="res://addons/cogito/Assets/Audio/Kenney/error_004.ogg" id="2_f7ale"]
@@ -6,6 +6,9 @@
 [ext_resource type="PackedScene" uid="uid://bc2hryr610vgo" path="res://addons/cogito/PackedScenes/simple_particle_puff.tscn" id="3_aueyu"]
 [ext_resource type="AnimationLibrary" uid="uid://c1du0rcgmr542" path="res://addons/cogito/Wieldables/Animations/Wieldable_LaserRifle.res" id="3_fjq23"]
 [ext_resource type="Script" uid="uid://b361n7ae3ixmn" path="res://addons/cogito/Assets/Shader/ViewmodelSpace.gd" id="5_fa3wp"]
+[ext_resource type="Script" path="res://addons/vs_framework/LootEconomy/ItemCondition.gd" id="6_condition"]
+[ext_resource type="Script" path="res://addons/vs_framework/LootEconomy/WeaponModdingComponent.gd" id="7_mods"]
+[ext_resource type="Script" path="res://addons/vs_framework/LootEconomy/CogitoWeaponIntegration.gd" id="8_bridge"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_kk8qb"]
 emission_enabled = true
@@ -371,6 +374,16 @@ anim_reload = "LaserRifle/reload"
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0083878, 0, 0)
 bus = &"SFX"
+
+[node name="ItemCondition" type="Node" parent="."]
+script = ExtResource("6_condition")
+wear_per_use = 0.1
+
+[node name="WeaponMods" type="Node" parent="."]
+script = ExtResource("7_mods")
+
+[node name="CogitoWeaponIntegration" type="Node" parent="."]
+script = ExtResource("8_bridge")
 
 [node name="MuzzleFlash" type="GPUParticles3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.0010919, 0.093681, -0.341702)

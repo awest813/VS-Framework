@@ -22,12 +22,14 @@ var projectile_pool := []
 var _last_index := -1
 
 var inventory_item_reference : WieldableItemPD
+var weapon_integration : CogitoWeaponIntegration
 
 
 func _ready() -> void:
 	# Here, we pre-instantiate `POOL_SIZE` bullets and store them in the `bullets` array.
 	for i in POOL_SIZE:
 		projectile_pool.append(projectile_prefab.instantiate())
+	weapon_integration = _get_weapon_integration()
 
 
 func get_projectile() -> Node3D:
@@ -50,6 +52,8 @@ func action_primary(_passed_item_reference : InventoryItemPD, _is_released: bool
 	if inventory_item_reference.charge_current <= 0: # Can't fire if empty + send hint.
 		inventory_item_reference.send_empty_hint()
 		return
+	if weapon_integration and not weapon_integration.consume_shot():
+		return
 	
 	# Sound and animation
 	animation_player.play(anim_action_primary)
@@ -67,7 +71,7 @@ func action_primary(_passed_item_reference : InventoryItemPD, _is_released: bool
 	bullet_point.add_child(Projectile)
 	Projectile.set_global_position(Vector3(bullet_point.global_position.x,bullet_point.global_position.y,bullet_point.global_position.z))
 	Projectile.global_transform.basis = bullet_point.global_transform.basis
-	Projectile.damage_amount = _passed_item_reference.wieldable_damage
+	Projectile.damage_amount = _get_modified_damage(_passed_item_reference.wieldable_damage)
 	Projectile.set_linear_velocity(Direction * projectile_velocity)
 	Projectile.Direction = Direction
 	Projectile.reparent(get_tree().get_current_scene())
@@ -97,6 +101,21 @@ func action_secondary(is_released:bool):
 
 # Function called when wieldable reload is attempted
 func reload():
+	if weapon_integration:
+		weapon_integration.notify_reload_started()
 	animation_player.play(anim_reload)
 	audio_stream_player_3d.stream = sound_reload
 	audio_stream_player_3d.play()
+
+
+func _get_modified_damage(base_damage : float) -> float:
+	if weapon_integration:
+		return weapon_integration.get_modified_damage(base_damage)
+	return base_damage
+
+
+func _get_weapon_integration() -> CogitoWeaponIntegration:
+	for child in get_children():
+		if child is CogitoWeaponIntegration:
+			return child
+	return null

@@ -50,7 +50,8 @@ VS Framework should remain the gameplay core, with COGITO providing the first-pe
 | 1 | `Void-Sovereigns` | Primary design source for factions, missions, loot themes, anomalies, trader economy, hub/raid flow, and worldbuilding. |
 | 2 | `skelerealms` | Secondary content source for atmosphere, encounters, enemy presentation, level dressing, item themes, and progression inspiration. |
 | 3 | `Godot4-FPS-Template` | Godot-native FPS implementation reference for weapon feel, camera polish, interaction UX, HUD patterns, and scene organization. |
-| 4 | `upbge-fps-template` | Concept-only reference for combat pacing, weapon feedback, AI pressure, and level flow. |
+| 4 | `Godot-Simple-FPS-Weapon-System-Asset` | Godot-native reference for weapon presentation, recoil/sway polish, reload flow, shared-ammo patterns, and viewmodel handling. Use only where it complements COGITO's existing wieldable stack. |
+| 5 | `upbge-fps-template` | Concept-only reference for combat pacing, weapon feedback, AI pressure, and level flow. |
 | Blocked | `sunone_aimbot` | Do not integrate. It is unrelated to the framework goals and is explicitly excluded. |
 
 ### Practical Rules
@@ -60,6 +61,7 @@ VS Framework should remain the gameplay core, with COGITO providing the first-pe
 3. Only consider code from Godot 4-compatible sources when it does not duplicate COGITO or VS Framework functionality.
 4. Treat UPBGE sources as design inspiration only because engine differences make direct reuse expensive.
 5. Keep blocked sources in the catalog to document exclusions and prevent accidental integration.
+6. Treat `Godot-Simple-FPS-Weapon-System-Asset` as a reviewed implementation reference for weapon feel/presentation only; do not import its GPLv3 demo weapon models/textures or replace COGITO's inventory+wieldable pipeline wholesale.
 
 ### Runtime/Data Access
 
@@ -409,6 +411,18 @@ var recoil : float = base_recoil + weapon_mods.get_total_recoil_modifier()
 ### WeaponAttachment resource
 
 Create `.tres` files extending `WeaponAttachment`. Set `slot`, `attachment_id`, and the relevant modifier fields. Present available attachments in the trader UI or a dedicated mod workbench scene.
+
+### COGITO Weapon Integration
+
+COGITO's pistol and laser rifle wieldables now look for an optional `CogitoWeaponIntegration` child. Add it alongside `ItemCondition` and `WeaponModdingComponent` on any COGITO `CogitoWieldable` scene to apply VS Framework weapon condition and attachment stats while keeping COGITO's inventory, ammo, reload, and wieldable flow intact.
+
+On each shot, the integration component:
+- applies `ItemCondition.take_wear()` and blocks fire if the weapon jams or breaks;
+- applies `WeaponModdingComponent.get_total_damage_modifier()` to projectile/hitscan damage;
+- exposes helper methods for accuracy, recoil, and magazine modifiers for custom weapons;
+- clears jams on reload by default.
+
+This is the concrete integration point for weapon-system ideas from `Godot-Simple-FPS-Weapon-System-Asset`: reuse its weapon-feel patterns through COGITO-compatible components rather than importing its demo assets or replacing the COGITO wieldable pipeline.
 
 ---
 
