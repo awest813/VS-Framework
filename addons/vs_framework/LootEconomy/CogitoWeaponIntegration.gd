@@ -16,6 +16,7 @@ signal shot_consumed
 
 var weapon_mods : WeaponModdingComponent
 var item_condition : ItemCondition
+var _components_resolved : bool = false
 
 
 func _ready() -> void:
@@ -42,6 +43,13 @@ func notify_reload_started() -> void:
 	_resolve_components()
 	if clear_jam_on_reload and item_condition and item_condition.is_jammed:
 		item_condition.clear_jam()
+
+
+func refresh_components() -> void:
+	weapon_mods = null
+	item_condition = null
+	_components_resolved = false
+	_resolve_components()
 
 
 func get_modified_damage(base_damage : float) -> float:
@@ -76,10 +84,13 @@ func get_modified_magazine_capacity(base_capacity : int) -> int:
 
 
 func _resolve_components() -> void:
+	if _components_resolved:
+		return
 	if weapon_mods == null:
 		weapon_mods = _get_node_or_sibling(weapon_mods_path, "WeaponModdingComponent") as WeaponModdingComponent
 	if item_condition == null:
 		item_condition = _get_node_or_sibling(item_condition_path, "ItemCondition") as ItemCondition
+	_components_resolved = true
 
 
 func _get_node_or_sibling(path : NodePath, class_label : String) -> Node:
