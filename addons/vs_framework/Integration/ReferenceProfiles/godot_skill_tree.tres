@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SourceIntegrationProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/vs_framework/Integration/SourceIntegrationProfile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+source_name = "Godot-Skill-Tree"
+repository_url = "https://github.com/EveningComet/Godot-Skill-Tree"
+priority = 2
+reuse_mode = 1
+purpose = "Godot 4 reference for ranked/tiered skill data (SkillData, SkillTier, SkillInstance), a Job/class-based skill organisation pattern, and a complete skill tree UI (SkillTree, SkillNode, SkillMenu). Enriches VS Framework Progression with multi-rank skill depth and provides a UI starting point."
+candidate_modules = Array[String](["Progression", "UI"])
+allow_direct_code_reuse = true
+review_notes = "MIT license, Godot 4 GDScript — code reuse is permitted. Adapt SkillData/SkillTier/SkillInstance to extend SkillDefinition with ranked tiers. Use SkillTree/SkillNode UI scripts as the base for the VS Framework skill tree UI. Do NOT import the Stats/Stat/StatModifier system — it conflicts with COGITO CogitoAttribute. Do NOT adopt Job-based class-level unlock gating; keep XP-based unlock logic in PlayerProgression."
