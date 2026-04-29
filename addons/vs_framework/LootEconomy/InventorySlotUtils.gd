@@ -21,6 +21,6 @@ static func get_slot_quantity(slot) -> int:
 
 
 static func get_property_or_null(source : Variant, property_name : String):
-	if source is Dictionary or source is Object:
+	if source != null and (source is Dictionary or source is Object):
 		return source.get(property_name)
 	return null
