@@ -36,8 +36,10 @@ func _process(_delta : float) -> void:
 	if bleed_indicator:
 		bleed_indicator.visible = _bleed != null and _bleed.is_bleeding()
 
-	if compass_label and _player_node.has_method("get") and "rotation" in _player_node:
-		compass_label.text = _get_cardinal(_player_node.rotation.y)
+	if compass_label:
+		var rotation = _player_node.get("rotation")
+		if rotation is Vector3:
+			compass_label.text = _get_cardinal(rotation.y)
 
 
 func _update_bar(bar : ProgressBar, attribute : CogitoAttribute) -> void:

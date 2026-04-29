@@ -27,7 +27,7 @@ func _process(delta : float) -> void:
 
 	if value_current > 0:
 		subtract(decay_rate * delta)
-	else:
+	elif _player_node.has_method("decrease_attribute"):
 		# Starving — drain stamina
 		_player_node.decrease_attribute(stamina_attribute_name, starving_stamina_drain * delta)
 

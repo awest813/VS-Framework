@@ -59,7 +59,9 @@ func select_mission(mission_id : String) -> void:
 ## Call when the player confirms deployment (e.g. presses "Deploy" button).
 ## Pass the player's current stash inventory_slots array for the pre-raid snapshot.
 func deploy(stash_slots : Array = []) -> void:
-	assert(current_phase == Phase.MISSION_SELECT, "deploy() called outside MISSION_SELECT phase")
+	if current_phase != Phase.MISSION_SELECT:
+		push_warning("ExtractionLoopManager: deploy() called outside MISSION_SELECT phase.")
+		return
 	if not active_session:
 		active_session = RunSessionResource.new()
 	active_session.wipe()

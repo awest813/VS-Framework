@@ -43,7 +43,7 @@ func _process(delta : float) -> void:
 	if not anomaly_definition or not _player_node:
 		return
 
-	if _player_in_damage_zone:
+	if _player_in_damage_zone and _player_node.has_method("decrease_attribute"):
 		_player_node.decrease_attribute(anomaly_definition.damage_attribute,
 			anomaly_definition.damage_per_second * delta)
 
