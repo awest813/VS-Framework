@@ -61,8 +61,7 @@ func select_mission(mission_id : String) -> void:
 func deploy(stash_slots : Array = []) -> void:
 	if current_phase != Phase.MISSION_SELECT:
 		var phase_name : String = _get_phase_name(current_phase)
-		var message : String = "ExtractionLoopManager: deploy() called in phase %s instead of MISSION_SELECT." \
-			% phase_name
+		var message : String = "ExtractionLoopManager: deploy() called in phase %s instead of MISSION_SELECT." % phase_name
 		push_warning(message)
 		return
 	if not active_session:

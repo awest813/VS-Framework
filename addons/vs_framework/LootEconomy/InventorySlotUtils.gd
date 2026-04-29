@@ -20,7 +20,7 @@ static func get_slot_quantity(slot) -> int:
 	return int(quantity) if quantity != null else 0
 
 
-static func get_property_or_null(source, property_name : String):
+static func get_property_or_null(source : Variant, property_name : String):
 	if source is Dictionary or source is Object:
 		return source.get(property_name)
 	return null
