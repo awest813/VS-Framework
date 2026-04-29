@@ -34,34 +34,9 @@ func wipe() -> void:
 func snapshot_stash(inventory_slots: Array) -> void:
 	stash_snapshot.clear()
 	for slot in inventory_slots:
-		var item_name := _get_slot_item_name(slot)
+		var item_name := VSInventorySlotUtils.get_slot_item_name(slot)
 		if not item_name.is_empty():
 			stash_snapshot.append({
 				"item_name": item_name,
-				"quantity": _get_slot_quantity(slot)
+				"quantity": VSInventorySlotUtils.get_slot_quantity(slot)
 			})
-
-
-func _get_slot_item_name(slot) -> String:
-	if slot == null:
-		return ""
-	var item = _get_variant_property(slot, "inventory_item")
-	if item == null:
-		return ""
-	var item_name = _get_variant_property(item, "name")
-	return str(item_name) if item_name != null else ""
-
-
-func _get_slot_quantity(slot) -> int:
-	if slot == null:
-		return 0
-	var quantity = _get_variant_property(slot, "quantity")
-	return int(quantity) if quantity != null else 0
-
-
-func _get_variant_property(source, property_name : String):
-	if source is Dictionary:
-		return source.get(property_name)
-	if source is Object:
-		return source.get(property_name)
-	return null
