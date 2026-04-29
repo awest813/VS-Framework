@@ -60,8 +60,11 @@ func select_mission(mission_id : String) -> void:
 ## Pass the player's current stash inventory_slots array for the pre-raid snapshot.
 func deploy(stash_slots : Array = []) -> void:
 	if current_phase != Phase.MISSION_SELECT:
-		var phase_name : String = Phase.keys()[current_phase]
-		var message : String = "ExtractionLoopManager: deploy() called in phase %s instead of MISSION_SELECT." % phase_name
+		var phase_names := Phase.keys()
+		var has_phase_name : bool = current_phase >= 0 and current_phase < phase_names.size()
+		var phase_name : String = phase_names[current_phase] if has_phase_name else "UNKNOWN"
+		var message : String = "ExtractionLoopManager: deploy() called in phase %s instead of MISSION_SELECT." \
+			% phase_name
 		push_warning(message)
 		return
 	if not active_session:

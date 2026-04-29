@@ -87,7 +87,7 @@ func _load_skill_tree(scene : PackedScene) -> void:
 
 	# Connect upgrade_requested from every SkillNodeUI.
 	await get_tree().process_frame
-	if not is_instance_valid(tree) or tree != _skill_tree:
+	if not is_instance_valid(tree):
 		return
 	for node : SkillNodeUI in tree.skill_nodes:
 		if not node.upgrade_requested.is_connected(_on_upgrade_requested):
