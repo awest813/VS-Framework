@@ -26,7 +26,7 @@ func _process(delta : float) -> void:
 
 	if value_current > 0:
 		subtract(decay_rate * delta)
-	else:
+	elif _player_node.has_method("decrease_attribute"):
 		_player_node.decrease_attribute(health_attribute_name, dehydrated_health_drain * delta)
 
 

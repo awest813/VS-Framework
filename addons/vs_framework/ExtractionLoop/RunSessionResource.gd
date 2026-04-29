@@ -34,8 +34,9 @@ func wipe() -> void:
 func snapshot_stash(inventory_slots: Array) -> void:
 	stash_snapshot.clear()
 	for slot in inventory_slots:
-		if slot != null and slot.inventory_item != null:
+		var item_name := VSInventorySlotUtils.get_slot_item_name(slot)
+		if not item_name.is_empty():
 			stash_snapshot.append({
-				"item_name": slot.inventory_item.name,
-				"quantity": slot.quantity
+				"item_name": item_name,
+				"quantity": VSInventorySlotUtils.get_slot_quantity(slot)
 			})

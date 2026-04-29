@@ -42,7 +42,7 @@ func _process(delta : float) -> void:
 		subtract(natural_decay_rate * delta)
 
 	# Health drain above threshold
-	if value_current > drain_threshold:
+	if value_current > drain_threshold and _player_node.has_method("decrease_attribute"):
 		var excess : float = value_current - drain_threshold
 		_player_node.decrease_attribute(health_attribute_name, excess * health_drain_rate * delta)
 

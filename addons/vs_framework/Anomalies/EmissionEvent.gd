@@ -53,7 +53,7 @@ func _process(delta : float) -> void:
 		var rad : RadiationAttribute = _player_node.find_child("RadiationAttribute", true, false) as RadiationAttribute
 		if rad:
 			rad.expose(radiation_per_second * delta)
-		else:
+		elif _player_node.has_method("decrease_attribute"):
 			_player_node.decrease_attribute("health", radiation_per_second * delta)
 
 
@@ -63,9 +63,7 @@ func trigger_warning() -> void:
 		return
 	CogitoGlobals.debug_log(true, "EmissionEvent", "WARNING — emission incoming in " + str(warning_duration) + "s")
 	emission_warning.emit(warning_duration)
-	if _player_node:
-		_player_node.player_interaction_component.send_hint(null,
-			"⚠ EMISSION INCOMING — find shelter in " + str(int(warning_duration)) + "s!")
+	_send_player_hint("⚠ EMISSION INCOMING — find shelter in " + str(int(warning_duration)) + "s!")
 	_warning_timer.start()
 
 
@@ -113,3 +111,11 @@ func _make_timer(duration : float, callback : Callable) -> Timer:
 
 func _auto_interval_active() -> bool:
 	return _auto_timer != null and auto_interval > 0
+
+
+func _send_player_hint(message : String) -> void:
+	if not _player_node:
+		return
+	var interaction_component = _player_node.get("player_interaction_component")
+	if interaction_component and interaction_component.has_method("send_hint"):
+		interaction_component.send_hint(null, message)

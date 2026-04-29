@@ -59,7 +59,11 @@ func select_mission(mission_id : String) -> void:
 ## Call when the player confirms deployment (e.g. presses "Deploy" button).
 ## Pass the player's current stash inventory_slots array for the pre-raid snapshot.
 func deploy(stash_slots : Array = []) -> void:
-	assert(current_phase == Phase.MISSION_SELECT, "deploy() called outside MISSION_SELECT phase")
+	if current_phase != Phase.MISSION_SELECT:
+		var phase_name : String = _get_phase_name(current_phase)
+		var message : String = "ExtractionLoopManager: deploy() called in phase %s instead of MISSION_SELECT." % phase_name
+		push_warning(message)
+		return
 	if not active_session:
 		active_session = RunSessionResource.new()
 	active_session.wipe()
@@ -119,4 +123,11 @@ func tick_raid_time(delta : float) -> void:
 func _set_phase(new_phase : Phase) -> void:
 	current_phase = new_phase
 	phase_changed.emit(new_phase)
-	CogitoGlobals.debug_log(true, "ExtractionLoopManager", "Phase → " + Phase.keys()[new_phase])
+	CogitoGlobals.debug_log(true, "ExtractionLoopManager", "Phase → " + _get_phase_name(new_phase))
+
+
+func _get_phase_name(phase : int) -> String:
+	var phase_names := Phase.keys()
+	if phase >= 0 and phase < phase_names.size():
+		return phase_names[phase]
+	return "UNKNOWN"

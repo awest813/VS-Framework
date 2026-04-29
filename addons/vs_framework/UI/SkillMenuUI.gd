@@ -77,15 +77,18 @@ func _load_skill_tree(scene : PackedScene) -> void:
 	for child in skill_tree_holder.get_children():
 		child.queue_free()
 
-	_skill_tree = scene.instantiate() as SkillTreeUI
-	if not _skill_tree:
+	var tree := scene.instantiate() as SkillTreeUI
+	if not tree:
 		push_warning("SkillMenuUI: skill_tree_scene root must have SkillTreeUI.gd attached.")
 		return
 
-	skill_tree_holder.add_child(_skill_tree)
+	_skill_tree = tree
+	skill_tree_holder.add_child(tree)
 
 	# Connect upgrade_requested from every SkillNodeUI.
 	await get_tree().process_frame
+	if not is_instance_valid(_skill_tree):
+		return
 	for node : SkillNodeUI in _skill_tree.skill_nodes:
 		node.upgrade_requested.connect(_on_upgrade_requested)
 

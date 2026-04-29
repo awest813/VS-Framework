@@ -23,11 +23,16 @@ func _process(_delta : float) -> void:
 	if not is_active or is_complete or not _player_node:
 		return
 
-	if not _player_node.inventory_data:
+	var inventory = _player_node.get("inventory_data")
+	if not inventory:
 		return
 
-	for slot in _player_node.inventory_data.inventory_slots:
-		if slot != null and slot.inventory_item != null:
-			if slot.inventory_item.name == target_item_name and slot.quantity > 0:
-				complete()
-				return
+	var inventory_slots := VSInventorySlotUtils.get_inventory_slots(inventory)
+	if not inventory_slots:
+		return
+
+	for slot in inventory_slots:
+		if VSInventorySlotUtils.get_slot_item_name(slot) == target_item_name \
+				and VSInventorySlotUtils.get_slot_quantity(slot) > 0:
+			complete()
+			return

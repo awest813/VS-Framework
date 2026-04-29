@@ -29,6 +29,8 @@ func _ready() -> void:
 func _process(delta : float) -> void:
 	if not _is_bleeding or not _player_node:
 		return
+	if not _player_node.has_method("decrease_attribute"):
+		return
 	_player_node.decrease_attribute(health_attribute_name, bleed_rate * _stacks * delta)
 
 

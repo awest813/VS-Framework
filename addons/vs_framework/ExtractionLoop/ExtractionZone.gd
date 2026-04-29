@@ -53,8 +53,7 @@ func _process(_delta : float) -> void:
 func open_zone() -> void:
 	is_open = true
 	zone_opened.emit()
-	if _player_node:
-		_player_node.player_interaction_component.send_hint(null, "Extraction zone is now open.")
+	_send_player_hint(_player_node, "Extraction zone is now open.")
 
 
 ## Seals the extraction zone.
@@ -68,9 +67,9 @@ func _on_body_entered(body : Node3D) -> void:
 		_player_inside = true
 		_player_node = body
 		if not is_open:
-			body.player_interaction_component.send_hint(null, hint_text_sealed)
+			_send_player_hint(body, hint_text_sealed)
 		else:
-			body.player_interaction_component.send_hint(null, hint_text_open)
+			_send_player_hint(body, hint_text_open)
 
 
 func _on_body_exited(body : Node3D) -> void:
@@ -100,11 +99,24 @@ func _on_extraction_timer_timeout() -> void:
 	# Gather what the player is carrying and report to the loop manager.
 	var extracted_items : Array[Dictionary] = []
 	var earned_currency : int = 0
-	if _player_node and _player_node.has_method("get") and _player_node.inventory_data:
-		for slot in _player_node.inventory_data.inventory_slots:
-			if slot != null and slot.inventory_item != null:
+	if _player_node:
+		var inventory = _player_node.get("inventory_data")
+		var inventory_slots := VSInventorySlotUtils.get_inventory_slots(inventory)
+		if inventory_slots:
+			for slot in inventory_slots:
+				var item_name := VSInventorySlotUtils.get_slot_item_name(slot)
+				if item_name.is_empty():
+					continue
 				extracted_items.append({
-					"item_name": slot.inventory_item.name,
-					"quantity": slot.quantity
+					"item_name": item_name,
+					"quantity": VSInventorySlotUtils.get_slot_quantity(slot)
 				})
 	ExtractionLoopManager.complete_extraction(extracted_items, earned_currency)
+
+
+func _send_player_hint(player : Node, message : String) -> void:
+	if not player:
+		return
+	var interaction_component = player.get("player_interaction_component")
+	if interaction_component and interaction_component.has_method("send_hint"):
+		interaction_component.send_hint(null, message)
