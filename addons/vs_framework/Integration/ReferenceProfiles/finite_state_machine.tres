@@ -1,0 +1,14 @@
+[gd_resource type="Resource" script_class="SourceIntegrationProfile" load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://addons/vs_framework/Integration/SourceIntegrationProfile.gd" id="1"]
+
+[resource]
+script = ExtResource("1")
+source_name = "FiniteStateMachine"
+repository_url = "https://codeberg.org/HexagonNico/FiniteStateMachine"
+priority = 2
+reuse_mode = 2
+purpose = "Godot finite-state-machine implementation reference for evaluating reusable state composition, transitions, and editor-friendly AI/control-flow patterns without replacing COGITO's existing NPC state machine by default."
+candidate_modules = Array[String](["AI", "Demo"])
+allow_direct_code_reuse = false
+review_notes = "Use as a concept/implementation reference only until license, Godot version compatibility, and API overlap with COGITO's npc_state_machine.gd are verified. Do not replace the current COGITO goto/caller NPC state flow without a dedicated migration plan."
