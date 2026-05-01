@@ -53,6 +53,7 @@ VS Framework should remain the gameplay core, with COGITO providing the first-pe
 | 4 | `Godot-Simple-FPS-Weapon-System-Asset` | Godot-native reference for weapon presentation, recoil/sway polish, reload flow, shared-ammo patterns, and viewmodel handling. Use only where it complements COGITO's existing wieldable stack. |
 | 5 | `upbge-fps-template` | Concept-only reference for combat pacing, weapon feedback, AI pressure, and level flow. |
 | 6 | `Godot-Skill-Tree` | Godot 4 MIT implementation reference for ranked/tiered skill data and skill tree UI. Adapt `SkillData`/`SkillTier`/`SkillInstance` to add multi-rank depth to `SkillDefinition`; use `SkillTree`/`SkillNode` UI scripts as a base for the VS Framework skill tree screen. Do **not** import its `Stats`/`StatModifier` system (conflicts with COGITO attributes) or Job-level unlock gating (conflicts with XP-based unlocks). |
+| 7 | `FiniteStateMachine` | Concept-only Godot FSM reference for AI/control-flow patterns. Evaluate state composition and transition ideas without replacing COGITO's existing NPC state machine by default. |
 | Blocked | `sunone_aimbot` | Do not integrate. It is unrelated to the framework goals and is explicitly excluded. |
 
 ### Practical Rules
@@ -64,6 +65,7 @@ VS Framework should remain the gameplay core, with COGITO providing the first-pe
 5. Keep blocked sources in the catalog to document exclusions and prevent accidental integration.
 6. Treat `Godot-Simple-FPS-Weapon-System-Asset` as a reviewed implementation reference for weapon feel/presentation only; do not import its GPLv3 demo weapon models/textures or replace COGITO's inventory+wieldable pipeline wholesale.
 7. `Godot-Skill-Tree` is MIT and Godot 4 native — direct code reuse is permitted for skill data and UI scripts. Keep XP-based unlock logic in `PlayerProgression`; do not adopt its class-level or stat-modifier systems.
+8. Treat `FiniteStateMachine` as concept-only until its license, Godot compatibility, and overlap with COGITO's `npc_state_machine.gd` are reviewed. Do not replace the current NPC `States.goto()` / `_state_enter` / `_state_exit` flow without a dedicated migration plan.
 
 ### Runtime/Data Access
 
